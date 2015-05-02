@@ -1,0 +1,12 @@
+SELECT * WHERE { GRAPH <http://example.org/ng1> {?s ?p ?o}}
+
+INSERT DATA { GRAPH <http://example.org/ng1> {"http://example.org/book/book5" "http://purl.org/dc/elements/1.1/title" "Harry Potter and the Order of the Phoenix1" }}
+
+
+PREFIX owl: <http://purl.org/dc/elements/1.1/>
+INSERT DATA { GRAPH <http://example.org/ng1> {<http://example.org/book/book5> owl:title "Harry Potter and the Order of the Phoenix1" }}
+
+
+select ?g where{graph ?g {?o ?p ?q}}
+
+select ?g where{graph ?g {?o ?p ?q}} group by ?g
