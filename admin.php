@@ -83,24 +83,29 @@
 		<div class="col-md-12 column">
 			<nav class="navbar navbar-default" role="navigation">
 				<div class="navbar-header">
-					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/principal.php?session_id=" . $_GET['session_id'];?>';">Security RDF</a>
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/principal.php?session_id=" . $_GET['session_id']. "&name=" . $_GET['name'];?>';">Security RDF</a>
 				</div>
 				
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<?php if($role=="superUser" or $role=="graphOwner"){ ?>
                                         <ul class="nav navbar-nav">
                                                 <li class="active">
-                                                        <a href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/admin.php?session_id=" . $_GET['session_id'];?>';">Admin Graphs</a>
+                                                        <a href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/admin.php?session_id=" . $_GET['session_id']. "&name=" . $_GET['name'];?>';">Admin Graphs</a>
                                                 </li>
                                         </ul>
                                         <?php }?>
                                         <?php if($role=="superUser"){ ?>
                                         <ul class="nav navbar-nav">
                                                 <li class="active">
-                                                        <a href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/createUser.php?session_id=" . $_GET['session_id'];?>';">Users</a>
+                                                        <a href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/createUser.php?session_id=" . $_GET['session_id']. "&name=" . $_GET['name'];?>';">Users</a>
                                                 </li>
                                         </ul>
                                         <?php }?>
+					<ul class="nav navbar-nav navbar-right">
+                                                <li>
+                                                        <b><?php echo "User: " . $_GET['name'];?></b>
+                                                </li>
+                                        </ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li>
 							<a onclick="logOut();">Log Out</a>
@@ -117,7 +122,8 @@
 		    <thead>
 		    <tr>
 		        <th data-field="id" data-sortable="true">Graph</th>
-		        <th data-field="name" data-sortable="true">User</th>
+		        <th data-field="name" data-sortable="true">Delete Graph</th>
+		        <th data-field="name" data-sortable="true">Add User to Graph</th>
 		    </tr>
 		    </thead>
 		    <tbody>
@@ -133,6 +139,8 @@
 	    				<a class="remove ml10" onclick="<?php echo 'deleteGraph(\''.$key1.'\','.$n.')';?>" title="Remove">
 	    					<i class="glyphicon glyphicon-remove"></i>
 		    			</a>
+				</td>
+				<td>
 		    			<a class="edit ml10" onclick="<?php echo 'addUserToGraph(\''.$key1.'\')';?>" title="Edit">
 		    				<i class="glyphicon glyphicon-edit"></i>
 		    			</a>
@@ -175,7 +183,7 @@
 		</table>
 	</div>
 	<div class="row clearfix">
-		<h2>Add New User</h2>
+		<h2>Create New User</h2>
 		<div class="col-md-12 column">
 			<label id="msg_error" style="color:red"></label>
 			<div class="form-group">

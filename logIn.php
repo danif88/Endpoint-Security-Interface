@@ -38,7 +38,7 @@ if($result_array['status'] !== 1){
 	echo "<meta http-equiv='refresh' content='0;url=" . $config['uri_int'] . "'>";
 }
 else{
-	echo "<meta http-equiv='refresh' content='0;url=" . $config['uri_int'] . "/principal.php?session_id=" . $session . "'>";
+	echo "<meta http-equiv='refresh' content='0;url=" . $config['uri_int'] . "/principal.php?session_id=" . $session . "&name=" . $result_array['error'] . "'>";
 }
 
 exit();

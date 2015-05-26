@@ -79,24 +79,29 @@ $context = stream_context_create($opts);
 		<div class="col-md-12 column">
 			<nav class="navbar navbar-default" role="navigation">
 				<div class="navbar-header">
-					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/principal.php?session_id=" . $_GET['session_id'];?>';">Security RDF</a>
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/principal.php?session_id=" . $_GET['session_id']. "&name=" . $_GET['name'];?>';">Security RDF</a>
 				</div>
 				
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<?php if($role=="superUser" or $role=="graphOwner"){ ?>
 					<ul class="nav navbar-nav">
 						<li class="active">
-							<a href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/admin.php?session_id=" . $_GET['session_id'];?>';">Admin Graphs</a>
+							<a href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/admin.php?session_id=" . $_GET['session_id'] . "&name=" . $_GET['name'] ;?>';">Admin Graphs</a>
 						</li>
 					</ul>
 					<?php }?>
 					<?php if($role=="superUser"){ ?>
                                         <ul class="nav navbar-nav">
                                                 <li class="active">
-                                                        <a href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/createUser.php?session_id=" . $_GET['session_id'];?>';">Users</a>
+                                                        <a href="#" onclick="location.href = '<?php echo $config['uri_int'] . "/createUser.php?session_id=" . $_GET['session_id']. "&name=" . $_GET['name'] ;?>';">Users</a>
                                                 </li>
                                         </ul>
                                         <?php }?>
+					<ul class="nav navbar-nav navbar-right">
+                                                <li>
+                                                	<b><?php echo "User: " . $_GET['name'];?></b>
+						</li>
+                                        </ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li>
 							<a onclick="logOut();">Log Out</a>
@@ -114,8 +119,9 @@ $context = stream_context_create($opts);
 				<div class="col-md-12 column">
 					<h2>
 						SPARQL Query
+						<button type="button" class="btn btn-default" onclick="exampleQueries();">Examples</button>
 					</h2>
-					<textarea class="form-control" rows="5" id="query"></textarea>
+					<textarea class="form-control" rows="5" id="query">PREFIX a: &lt;http://example.org/&gt;&#10;SELECT * where {GRAPH a:ng1 {?o ?p ?q}}</textarea>
 					<div class="btn-group">
 						 <select class="selectpicker" id="outputType">
 						    <option value="text">Text</option>
@@ -131,7 +137,9 @@ $context = stream_context_create($opts);
 				<div class="col-md-12 column">
 					<h2>
 						SPARQL Update
+						<button type="button" class="btn btn-default" onclick="exampleUpdates();">Examples</button>
 					</h2>
+					<label id="msg_error_update" style="color:red"></label>
 					<form id="updateForm" action="<?php echo $config['uri_api'] . '/update'?>" enctype="multipart/form-data" method="post">
 					<textarea class="form-control" rows="5" id="query" name="query"></textarea>
 					<input type="hidden" name="session" value="<?php echo $_GET['session_id'];?>">
@@ -145,11 +153,13 @@ $context = stream_context_create($opts);
 					<h2>
 						File Upload
 					</h2>
+					<label style="color:gray"><b>Example:  </b>http://example.org/ng1</label>
+					<br>
 					<label id="msg_error" style="color:red"></label>
 					<form id="fileForm" action="<?php echo $config['uri_api'] . '/upload'?>" enctype="multipart/form-data" method="post">
 					<div class="form-group">
 					  <label for="usr">Graph:</label>
-					  <input type="text" class="form-control" id="graph" name="name">
+					  <input type="text" class="form-control" id="graph" name="name" placeholder="http://example.org/ng1" value="http://example.org/ng1">
 					</div>
 					<div class="form-group">
 					    <label for="exampleInputFile">File input</label>

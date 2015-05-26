@@ -1,6 +1,7 @@
 $( document ).ready(function() {
     $("#msg_error").text("");
-	$('#fileForm').ajaxForm(function(data) {
+    $('#fileForm').ajaxForm(function(data) {
+	$("#msg_error").text("");
         console.log(data);
 		if(data.status===1)
 			alert(data.data);
@@ -11,13 +12,14 @@ $( document ).ready(function() {
     }); 
     $("#msg_error").text("");
     $('#updateForm').ajaxForm(function(data) {
-        console.log(data);
+        $("#msg_error").text("");
+	console.log(data);
         if(data.status===1)
             alert(data.data);
         else if(data.status===3)
             redirect(data);
         else
-            $("#msg_error").text("ERROR " + data.error);
+            $("#msg_error_update").text("ERROR " + data.error);
     }); 
 });
 
@@ -76,8 +78,10 @@ function createGraphOwnerUser(){
         var pass=md5($("#password").val());
 
         $.ajax({url: $("#uri_api").val() + "/addGraphOwnerUser?session=" + $("#session_id").val() + "&name=" + $("#user").val() + "&encrypted=" + pass, dataType: "json", contentType: "application/json; charset=utf-8",type:"GET", success: function(data){
-        if(data.status===1)
+        if(data.status===1){
             alert(data.data);
+	    location.reload();
+	}
         else if(data.status===3)
             redirect(data);
         else
@@ -130,9 +134,24 @@ function deleteGraph(graph,n){
 
 function addUserToGraph(graph){
     $("#msg_error_graphs").text("");
-    bootbox.prompt({
+    var select = '<select id="select_user">';
+    $.ajax({url: $("#uri_api").val() + "/getAllUsers?session=" + $("#session_id").val(), dataType: "json", contentType: "application/json; charset=utf-8",type:"GET", success: function(data){
+        console.log(data);
+	var data2=$.parseJSON(data.data);
+	$.each(data2, function(k, v) {
+  		select = select + '<option value="'+k+'">'+k+'</option>';
+	});
+	select = select + '</select>';
+	
+    	bootbox.dialog({
+                message: select + "<br><br><br><button type='button' class='btn btn-default' onclick='runaddUserToGraph(\""+graph+"\");'>OK</button>",
+                title: "User Name?"});
+    }});
+
+
+/*    bootbox.prompt({
       title: "User name?",
-      value: "",
+      value: select,
       callback: function(name) {
         if (name === "") {
           alert("User cannot be empty")
@@ -142,7 +161,7 @@ function addUserToGraph(graph){
 //                $("#msg_graphs").text(data.data);
 //                console.log(data);
                 if(data.status===1)
-                    $("#graphs_" + n).remove();
+			location.reload();	
                 else if(data.status===3)
                     redirect(data);
                 else
@@ -151,6 +170,26 @@ function addUserToGraph(graph){
         }
       }
     });
+   // }});*/
+}
+
+function runaddUserToGraph(graph){
+	var name=$("#select_user").val();
+	if (name === "") {
+          alert("User cannot be empty")
+          return false;
+        } else {
+            $.ajax({url: $("#uri_api").val() + "/addUserToGraph?session=" + $("#session_id").val() + "&name=" + name + "&graph=" + graph, dataType: "json", contentType: "application/json; charset=utf-8",type:"GET", success: function(data){
+//                $("#msg_graphs").text(data.data);
+//                console.log(data);
+                if(data.status===1)
+                        location.reload();      
+                else if(data.status===3)
+                    redirect(data);
+                else
+                    $("#msg_error_graphs").text("ERROR " + data.error);
+            }});
+        }
 }
 
 /*
@@ -184,6 +223,18 @@ function changePass(){
   		message: "Password:<input id='pass1' type='password'></input><br>Repeat Password:<input id='pass2' type='password'></input><br><button type='button' class='btn btn-default' onclick='runChangePass();'>OK</button>",
   		title: "New Password?"});
 
+}
+
+function exampleQueries(){
+	bootbox.dialog({
+                message: "<b>Example Nº1:</b><br>PREFIX a: &lt;http://example.org/&gt;<br>SELECT * where {GRAPH a:ng1 {?o ?p ?q}}<br><br><b>Example Nº1:</b><br>PREFIX a: &lt;http://example.org/&gt;<br>SELECT * FROM a:ng1 WHERE {?o ?p ?q}",
+                title: "Examples"});
+}
+
+function exampleUpdates(){
+        bootbox.dialog({
+                message: "<b>Example Nº1:</b><br>INSERT DATA{GRAPH &lt;http://example.org/ng1&gt;<br>{ &lt;http://example.org/book/books5&gt; &lt;http://purl.org/dc/elements/1.1/creator&gt; \"J.K. Rowling\"} }<br><br><b>Example Nº1:</b><br>DELETE DATA{GRAPH &lt;http://example.org/ng1&gt;<br>{ &lt;http://example.org/book/books5&gt; &lt;http://purl.org/dc/elements/1.1/creator&gt; \"J.K. Rowling\"} }<br><br><b>Example Nº3:</b><br>INSERT { GRAPH &lt;http://example.org/ng3&gt; { ?o ?p ?q} }<br>USING &lt;http://example.org/ng1&gt;<br>WHERE { ?o ?p ?q }<br><br><b>Example Nº4:</b><br>WITH &lt;http://example.org/ng3&gt;<br>DELETE { ?o ?p ?q } <br>WHERE { ?o ?p ?q } ",
+                title: "Examples"});
 }
 
 function runChangePass(){
