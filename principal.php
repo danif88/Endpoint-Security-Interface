@@ -30,6 +30,16 @@ $context = stream_context_create($opts);
 	}
 
 	$role=$result_array["data"];
+	
+	$result_graphs = file_get_contents($config['uri_api'] . "/getGraphsPermited?session=" . $_GET["session_id"], false, $context);
+
+	$result_graphs_array=json_decode($result_graphs,true);
+
+	if($result_graphs_array['status'] !== 1){
+		echo "<meta http-equiv='refresh' content='0;url=" . $config['uri_int'] . "'>";
+	}
+
+	$graphs=$result_graphs_array["data"];
 ?>
 
 <!DOCTYPE html>
@@ -121,7 +131,7 @@ $context = stream_context_create($opts);
 						SPARQL Query
 						<button type="button" class="btn btn-default" onclick="exampleQueries();">Examples</button>
 					</h2>
-					<textarea class="form-control" rows="5" id="query">PREFIX a: &lt;http://example.org/&gt;&#10;SELECT * where {GRAPH a:ng1 {?o ?p ?q}}</textarea>
+					<textarea class="form-control" rows="5" id="query_select">PREFIX a: &lt;http://example.org/&gt;&#10;SELECT * where {GRAPH a:ng1 {?o ?p ?q}}</textarea>
 					<div class="btn-group">
 						 <select class="selectpicker" id="outputType">
 						    <option value="text">Text</option>
@@ -139,6 +149,14 @@ $context = stream_context_create($opts);
 						SPARQL Update
 						<button type="button" class="btn btn-default" onclick="exampleUpdates();">Examples</button>
 					</h2>
+					<select id="graphs_permited" onclick="url_update();">
+                                        <?php
+                                                $array = json_decode($graphs);
+                                                foreach ($array as $key1 => $value1) {
+                                        ?>
+                                                <option value="<?php echo $key1;?>"><?php echo $key1;?></option>
+                                        <?php } ?>
+                                        </select>
 					<label id="msg_error_update" style="color:red"></label>
 					<form id="updateForm" action="<?php echo $config['uri_api'] . '/update'?>" enctype="multipart/form-data" method="post">
 					<textarea class="form-control" rows="5" id="query" name="query"></textarea>

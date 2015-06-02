@@ -10,9 +10,9 @@ $( document ).ready(function() {
 		else
 			$("#msg_error").text("ERROR " + data.error);
     }); 
-    $("#msg_error").text("");
+    $("#msg_error_update").text("");
     $('#updateForm').ajaxForm(function(data) {
-        $("#msg_error").text("");
+        $("#msg_error_update").text("");
 	console.log(data);
         if(data.status===1)
             alert(data.data);
@@ -29,7 +29,7 @@ function redirect(data){
 }
 
 function doQuery(){
-	var query = encodeURI($("#query").val());
+	var query = encodeURI($("#query_select").val());
 	window.location.assign($("#uri_fuseki").val() + "/ds/query?query=" + query + "&output=" + $("#outputType").val());
 }
 
@@ -38,7 +38,10 @@ function logOut(){
         redirect(data);
     }});
 }
-
+function url_update(){
+	var url = $("#graphs_permited").val();
+	$("#query").val("INSERT DATA{\n\tGRAPH <"+url+">\n\t\t{?o ?p ?q} }");
+}
 function createUser(){
 	// $.ajax({
 	// 	url: "http://localhost:8080/addUser?session=" + $("#session_id").val() + "&name=" + $("#user").val() + "&encrypted=" + $("#password").val()

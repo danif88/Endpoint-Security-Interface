@@ -142,7 +142,7 @@
 				</td>
 				<td>
 		    			<a class="edit ml10" onclick="<?php echo 'addUserToGraph(\''.$key1.'\')';?>" title="Edit">
-		    				<i class="glyphicon glyphicon-edit"></i>
+		    				<i class="glyphicon glyphicon-plus"></i>
 		    			</a>
 		    		</td>
 		    	</tr>
